@@ -1,0 +1,257 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > caseController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.whitecommunity.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: caseController (com.example.whitecommunity.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">caseController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (9/9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (31/31)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.whitecommunity.controller;
+&nbsp;
+&nbsp;import com.example.whitecommunity.result.Result;
+&nbsp;import com.example.whitecommunity.pojo.CaseInfo;
+&nbsp;import com.example.whitecommunity.service.CaseService;
+&nbsp;import com.example.whitecommunity.service.TagCaseService;
+&nbsp;import com.example.whitecommunity.pojo.TagInfo;
+&nbsp;import com.example.whitecommunity.service.TagService;
+&nbsp;import org.springframework.stereotype.Controller;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;
+&nbsp;import org.apache.shiro.SecurityUtils;
+&nbsp;import org.apache.shiro.subject.Subject;
+&nbsp;import com.example.whitecommunity.result.Result;
+&nbsp;import com.example.whitecommunity.utils.JwtUtils;
+&nbsp;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Objects;
+&nbsp;import javax.persistence.criteria.CriteriaBuilder;
+&nbsp;import javax.validation.Valid;
+&nbsp;
+&nbsp;@RestController
+<b class="fc">&nbsp;public class caseController {</b>
+<b class="fc">&nbsp;    @Autowired</b>
+&nbsp;    CaseService caseService=new CaseService();
+&nbsp;
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;    @Autowired</b>
+&nbsp;    TagCaseService tagCaseService=new TagCaseService();
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    @GetMapping(&quot;/api/case/editopen/{caseId}&quot;)
+&nbsp;    @CrossOrigin
+&nbsp;    public CaseInfo editOpen(@PathVariable(value=&quot;caseId&quot;) int caseId) throws Exception{
+<b class="fc">&nbsp;        CaseInfo myCase=caseService.getById(caseId);</b>
+&nbsp;
+<b class="fc">&nbsp;        myCase.setOpen(1-myCase.getOpen());</b>
+<b class="fc">&nbsp;        caseService.addOrUpdate(myCase);</b>
+<b class="fc">&nbsp;        return  myCase;</b>
+&nbsp;    }
+&nbsp;    @GetMapping(&quot;/api/case/{caseId}&quot;)
+&nbsp;    @CrossOrigin
+&nbsp;    public CaseInfo details(@PathVariable(value=&quot;caseId&quot;) int caseId) throws Exception {
+<b class="fc">&nbsp;        CaseInfo myCase=caseService.getById(caseId);</b>
+&nbsp;
+&nbsp;//      拦截
+&nbsp;//        Subject subject = SecurityUtils.getSubject();
+&nbsp;//        String jwt = (String) subject.getPrincipal();
+&nbsp;//
+&nbsp;//        if (myCase.getOpen()==0 &amp;&amp; JwtUtils.getId(jwt) != myCase.getUserId()){
+&nbsp;//            CaseInfo nullCase=new CaseInfo();
+&nbsp;//            nullCase.setName(myCase.getName());
+&nbsp;//            nullCase.setUserId(myCase.getUserId());
+&nbsp;//            nullCase.setCaseId(myCase.getCaseId());
+&nbsp;//            nullCase.setOpen(myCase.getOpen());
+&nbsp;//            nullCase.setReleaseTime(myCase.getReleaseTime());
+&nbsp;//            return nullCase;
+&nbsp;//        }
+<b class="fc">&nbsp;        List&lt;TagInfo&gt; tags = tagCaseService.getByCaseId(caseId);</b>
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;        myCase.setTags(tags);</b>
+&nbsp;
+<b class="fc">&nbsp;        return myCase;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/api/caseForPublish/{caseId}&quot;)
+&nbsp;    @CrossOrigin
+&nbsp;    public CaseInfo detailsForPublish(@PathVariable(value=&quot;caseId&quot;) int caseId) throws Exception {
+<b class="fc">&nbsp;        CaseInfo myCase=caseService.getById(caseId);</b>
+&nbsp;
+&nbsp;//        Subject subject = SecurityUtils.getSubject();
+&nbsp;//        String jwt = (String) subject.getPrincipal();
+&nbsp;//
+&nbsp;//        if(JwtUtils.getId(jwt) != myCase.getUserId()){
+&nbsp;//            CaseInfo nullCase=new CaseInfo();
+&nbsp;//            nullCase.setName(myCase.getName());
+&nbsp;//            nullCase.setUserId(myCase.getUserId());
+&nbsp;//            nullCase.setCaseId(myCase.getCaseId());
+&nbsp;//            nullCase.setReleaseTime(myCase.getReleaseTime());
+&nbsp;//            nullCase.setNotes(&quot;unSuccess&quot;);
+&nbsp;//            return nullCase;
+&nbsp;//        }
+&nbsp;
+<b class="fc">&nbsp;        List&lt;TagInfo&gt; tags = tagCaseService.getByCaseId(caseId);</b>
+&nbsp;
+<b class="fc">&nbsp;        myCase.setTags(tags);</b>
+<b class="fc">&nbsp;        return myCase;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @PostMapping(&quot;/api/case/add&quot;)
+&nbsp;    @CrossOrigin
+&nbsp;    public CaseInfo addOrUpdate(@RequestBody CaseInfo myCase,@RequestParam(value = &quot;tags&quot;) String tags) throws Exception {
+<b class="fc">&nbsp;        System.out.println(myCase.getCaseId());</b>
+<b class="fc">&nbsp;        CaseInfo newCase=caseService.addOrUpdate(myCase);</b>
+&nbsp;
+&nbsp;
+&nbsp;        // 删除旧标签与该问题的联系
+<b class="fc">&nbsp;        tagCaseService.deleteTagCaseRelation(newCase.getCaseId());</b>
+&nbsp;
+<b class="fc">&nbsp;        for (String tag: tags.split(&quot;;&quot;)) {</b>
+<b class="fc">&nbsp;            if (!Objects.equals(tag, &quot;&quot;))</b>
+<b class="fc">&nbsp;            tagCaseService.insertTagCase(tag, myCase.getCaseId());</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return newCase;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    @PostMapping(&quot;/api/case/modify/info&quot;)
+&nbsp;    @CrossOrigin
+&nbsp;    public CaseInfo modifyInfo(@RequestBody CaseInfo myCase) throws Exception {
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;        System.out.println(myCase.getCaseId());</b>
+<b class="fc">&nbsp;        caseService.updateInfo(myCase);</b>
+<b class="fc">&nbsp;        return myCase;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/api/case/modify/content&quot;)
+&nbsp;    @CrossOrigin
+&nbsp;    public CaseInfo modifyContent(@RequestBody CaseInfo myCase) throws Exception {
+<b class="fc">&nbsp;        System.out.println(myCase.getCaseId());</b>
+<b class="fc">&nbsp;        caseService.updateContent(myCase);</b>
+<b class="fc">&nbsp;        return myCase;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @GetMapping(&quot;/api/case/user&quot;)
+&nbsp;    @CrossOrigin
+&nbsp;    public List&lt;CaseInfo&gt; getCasesOfUser(@RequestParam int userId) throws Exception {
+<b class="fc">&nbsp;        return caseService.findByUserId(userId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @GetMapping(&quot;/api/case/delete&quot;)
+&nbsp;    @CrossOrigin
+&nbsp;    public void deleteQuestion(@RequestParam int caseId) throws Exception {
+&nbsp;        // 删除该问题与其所有标签的联系
+<b class="fc">&nbsp;        tagCaseService.deleteTagCaseRelation(caseId);</b>
+&nbsp;
+&nbsp;
+&nbsp;        // 删除问题的表中的记录
+<b class="fc">&nbsp;        caseService.deleteById(caseId);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-01-07 21:09</div>
+</div>
+</body>
+</html>

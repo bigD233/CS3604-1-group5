@@ -1,0 +1,139 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > UserRoleService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.whitecommunity.service</a>
+</div>
+
+<h1>Coverage Summary for Class: UserRoleService (com.example.whitecommunity.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UserRoleService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    92.3%
+  </span>
+  <span class="absValue">
+    (12/13)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.whitecommunity.service;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import com.example.whitecommunity.dao.UserRoleDAO;
+&nbsp;import com.example.whitecommunity.pojo.UserRole;
+&nbsp;
+&nbsp;@Service
+<b class="fc">&nbsp;public class UserRoleService {</b>
+<b class="fc">&nbsp;    UserRoleDAO userRoleDAO = new UserRoleDAO();</b>
+&nbsp;
+&nbsp;    private String getRoleName(int roleId) {
+<b class="fc">&nbsp;        if (roleId == 1) {</b>
+<b class="fc">&nbsp;            return &quot;admin&quot;;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;String&gt; getRoles(int userId) {
+<b class="fc">&nbsp;        List&lt;UserRole&gt; userRoles = userRoleDAO.findByUserId(userId);</b>
+<b class="fc">&nbsp;        List&lt;String&gt; roles = new ArrayList&lt;&gt;();</b>
+&nbsp;
+<b class="fc">&nbsp;        for (UserRole userRole : userRoles) {</b>
+<b class="fc">&nbsp;            String roleName = getRoleName(userRole.getRoleId());</b>
+&nbsp;
+<b class="fc">&nbsp;            if (roleName != null) {</b>
+<b class="fc">&nbsp;                roles.add(roleName);</b>
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+<b class="fc">&nbsp;        return roles;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-01-13 10:59</div>
+</div>
+</body>
+</html>

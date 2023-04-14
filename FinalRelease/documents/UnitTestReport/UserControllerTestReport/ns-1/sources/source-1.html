@@ -1,0 +1,324 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > UserController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.whitecommunity.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: UserController (com.example.whitecommunity.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UserController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (21/21)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (69/69)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.whitecommunity.controller;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.Date;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;import org.springframework.data.domain.Page;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import com.example.whitecommunity.pojo.User;
+&nbsp;import com.example.whitecommunity.pojo.UserMessage;
+&nbsp;import com.example.whitecommunity.pojo.UserMessageSummary;
+&nbsp;import com.example.whitecommunity.pojo.UserPunishment;
+&nbsp;import com.example.whitecommunity.result.LoginResult;
+&nbsp;import com.example.whitecommunity.result.PageResult;
+&nbsp;import com.example.whitecommunity.result.Result;
+&nbsp;import com.example.whitecommunity.service.UserFollowingService;
+&nbsp;import com.example.whitecommunity.service.UserMessageService;
+&nbsp;import com.example.whitecommunity.service.UserMessageSummaryService;
+&nbsp;import com.example.whitecommunity.service.UserPunishmentService;
+&nbsp;import com.example.whitecommunity.service.UserService;
+&nbsp;import com.example.whitecommunity.utils.JwtUtils;
+&nbsp;
+&nbsp;@RestController
+<b class="fc">&nbsp;public class UserController {</b>
+<b class="fc">&nbsp;    UserService userService = new UserService();</b>
+&nbsp;
+<b class="fc">&nbsp;    UserFollowingService userFollowingService = new UserFollowingService();</b>
+&nbsp;
+<b class="fc">&nbsp;    UserMessageSummaryService userMessageSummaryService = new UserMessageSummaryService();</b>
+&nbsp;
+<b class="fc">&nbsp;    UserMessageService userMessageService = new UserMessageService();</b>
+&nbsp;
+<b class="fc">&nbsp;    UserPunishmentService userPunishmentService = new UserPunishmentService();</b>
+&nbsp;
+&nbsp;    @CrossOrigin
+&nbsp;    @PostMapping(&quot;/api/user/login&quot;)
+&nbsp;    public Result&lt;LoginResult&gt; login(@RequestParam String username, @RequestParam String password) {
+<b class="fc">&nbsp;        User user = userService.login(username, password);</b>
+<b class="fc">&nbsp;        if (user == null) {</b>
+<b class="fc">&nbsp;            return Result.error(&quot;用户名或密码错误&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        String token = JwtUtils.sign(user.getId(), user.getPassword());</b>
+<b class="fc">&nbsp;        return Result.success(new LoginResult(user.getId(), token));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @CrossOrigin
+&nbsp;    @PostMapping(&quot;/api/user/add&quot;)
+&nbsp;    public Result&lt;LoginResult&gt; addUser(@RequestParam String username, @RequestParam String password) {
+<b class="fc">&nbsp;        User user = userService.add(username, password);</b>
+<b class="fc">&nbsp;        if (user == null) {</b>
+<b class="fc">&nbsp;            return Result.error(&quot;用户名已被使用&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        String token = JwtUtils.sign(user.getId(), user.getPassword());</b>
+<b class="fc">&nbsp;        return Result.success(new LoginResult(user.getId(), token));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @CrossOrigin
+&nbsp;    @GetMapping(&quot;/api/user/get&quot;)
+&nbsp;    public Result&lt;User&gt; getUser(@RequestParam int id) {
+<b class="fc">&nbsp;        User user = userService.get(id);</b>
+<b class="fc">&nbsp;        if (user == null) {</b>
+<b class="fc">&nbsp;            return Result.error(&quot;用户不存在&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return Result.success(user);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @CrossOrigin
+&nbsp;    @PostMapping(&quot;/api/user/update/setting&quot;)
+&nbsp;    public Result&lt;String&gt; updateUserSetting(@RequestParam int id, @RequestParam(required = false) String sign,
+&nbsp;            @RequestParam(required = false) String avatar) {
+<b class="fc">&nbsp;        User user = userService.updateSetting(id, sign, avatar);</b>
+<b class="fc">&nbsp;        if (user == null) {</b>
+<b class="fc">&nbsp;            return Result.error(&quot;更新失败&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return Result.success(null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @CrossOrigin
+&nbsp;    @PostMapping(&quot;/api/user/update/password&quot;)
+&nbsp;    public Result&lt;LoginResult&gt; updateUserPassword(@RequestParam int id, @RequestParam String oldPassword,
+&nbsp;            @RequestParam String newPassword) {
+<b class="fc">&nbsp;        User user = userService.updatePassword(id, oldPassword, newPassword);</b>
+<b class="fc">&nbsp;        if (user == null) {</b>
+<b class="fc">&nbsp;            return Result.error(&quot;密码错误&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        String token = JwtUtils.sign(user.getId(), user.getPassword());</b>
+<b class="fc">&nbsp;        return Result.success(new LoginResult(user.getId(), token));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @CrossOrigin
+&nbsp;    @PostMapping(&quot;/api/user/update/info&quot;)
+&nbsp;    public Result&lt;String&gt; updateUserInfo(@RequestParam int id, @RequestParam Long birthday,
+&nbsp;            @RequestParam String sex, @RequestParam Integer height,
+&nbsp;            @RequestParam Integer weight) {
+<b class="fc">&nbsp;        User user = userService.updateInfo(id, birthday &gt; 0 ? new Date(birthday) : null, sex, height, weight);</b>
+<b class="fc">&nbsp;        if (user == null) {</b>
+<b class="fc">&nbsp;            return Result.error(&quot;更新失败&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return Result.success(null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @CrossOrigin
+&nbsp;    @PostMapping(&quot;/api/user/add/following&quot;)
+&nbsp;    public Result&lt;String&gt; addFollowing(@RequestParam int followee, @RequestParam int follower) {
+<b class="fc">&nbsp;        if (followee == follower) {</b>
+<b class="fc">&nbsp;            return Result.error(&quot;参数错误&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        userFollowingService.add(followee, follower);</b>
+&nbsp;
+<b class="fc">&nbsp;        return Result.success(null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @CrossOrigin
+&nbsp;    @PostMapping(&quot;/api/user/remove/following&quot;)
+&nbsp;    public Result&lt;String&gt; removeFollowing(@RequestParam int followee, @RequestParam int follower) {
+<b class="fc">&nbsp;        userFollowingService.remove(followee, follower);</b>
+<b class="fc">&nbsp;        return Result.success(null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @CrossOrigin
+&nbsp;    @GetMapping(&quot;/api/user/get/following&quot;)
+&nbsp;    public Result&lt;Boolean&gt; getFollowing(@RequestParam int followee, @RequestParam int follower) {
+<b class="fc">&nbsp;        return Result.success(userFollowingService.exists(followee, follower));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @CrossOrigin
+&nbsp;    @GetMapping(&quot;/api/user/get/follower&quot;)
+&nbsp;    public Result&lt;PageResult&lt;User&gt;&gt; getFollowers(@RequestParam int followee,
+&nbsp;            @RequestParam int pageSize,
+&nbsp;            @RequestParam int pageNum) {
+<b class="fc">&nbsp;        List&lt;User&gt; list = userService.getFollowers(followee, pageSize, pageNum - 1);</b>
+<b class="fc">&nbsp;        if (list == null) {</b>
+<b class="fc">&nbsp;            return Result.error(&quot;用户不存在&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        int total = userFollowingService.countFollowers(followee);</b>
+<b class="fc">&nbsp;        return Result.success(new PageResult&lt;&gt;(list, total));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @CrossOrigin
+&nbsp;    @GetMapping(&quot;/api/user/get/followee&quot;)
+&nbsp;    public Result&lt;PageResult&lt;User&gt;&gt; getFollowees(@RequestParam int follower,
+&nbsp;            @RequestParam int pageSize,
+&nbsp;            @RequestParam int pageNum) {
+<b class="fc">&nbsp;        List&lt;User&gt; list = userService.getFollowees(follower, pageSize, pageNum - 1);</b>
+<b class="fc">&nbsp;        if (list == null) {</b>
+<b class="fc">&nbsp;            return Result.error(&quot;用户不存在&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        int total = userFollowingService.countFollowees(follower);</b>
+<b class="fc">&nbsp;        return Result.success(new PageResult&lt;&gt;(list, total));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @CrossOrigin
+&nbsp;    @PostMapping(&quot;/api/message/add&quot;)
+&nbsp;    public Result&lt;String&gt; newMessage(@RequestParam int from, @RequestParam int to, String message) {
+<b class="fc">&nbsp;        if (from == to) {</b>
+<b class="fc">&nbsp;            return Result.error(&quot;参数错误&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        userMessageService.add(from, to, message);</b>
+<b class="fc">&nbsp;        userMessageSummaryService.increaseUnread(from, to, message);</b>
+<b class="fc">&nbsp;        return Result.success(null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @CrossOrigin
+&nbsp;    @PostMapping(&quot;/api/message/read&quot;)
+&nbsp;    public Result&lt;String&gt; readMessage(@RequestParam int from, @RequestParam int to) {
+<b class="fc">&nbsp;        userMessageSummaryService.clearUnread(from, to);</b>
+<b class="fc">&nbsp;        return Result.success(null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @CrossOrigin
+&nbsp;    @GetMapping(&quot;/api/message/summary&quot;)
+&nbsp;    public Result&lt;Page&lt;UserMessageSummary&gt;&gt; getMessageSummary(@RequestParam int id, @RequestParam int pageSize,
+&nbsp;            @RequestParam int pageNum) {
+<b class="fc">&nbsp;        Page&lt;UserMessageSummary&gt; page = userMessageSummaryService.findByTo(id, pageSize, pageNum);</b>
+<b class="fc">&nbsp;        return Result.success(page);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @CrossOrigin
+&nbsp;    @GetMapping(&quot;/api/message/get&quot;)
+&nbsp;    public Result&lt;Page&lt;UserMessage&gt;&gt; getMessage(@RequestParam int id1, @RequestParam int id2,
+&nbsp;            @RequestParam int pageSize,
+&nbsp;            @RequestParam int pageNum) {
+<b class="fc">&nbsp;        Page&lt;UserMessage&gt; page = userMessageService.get(id1, id2, pageSize, pageNum);</b>
+<b class="fc">&nbsp;        return Result.success(page);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @CrossOrigin
+&nbsp;    @GetMapping(&quot;/api/user/role&quot;)
+&nbsp;    public Result&lt;List&lt;String&gt;&gt; getRole() {
+<b class="fc">&nbsp;        List&lt;String&gt; roles = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        return Result.success(roles);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @CrossOrigin
+&nbsp;    @GetMapping(&quot;/api/user/punishment/get&quot;)
+&nbsp;    public Result&lt;UserPunishment&gt; getPunishment(@RequestParam int userId) {
+<b class="fc">&nbsp;        return Result.success(userPunishmentService.get(userId));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @CrossOrigin
+&nbsp;    @GetMapping(&quot;/api/user/punishment/all&quot;)
+&nbsp;    public Result&lt;List&lt;UserPunishment&gt;&gt; getAllPunishment() {
+<b class="fc">&nbsp;        return Result.success(userPunishmentService.getAll());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @CrossOrigin
+&nbsp;    @PostMapping(&quot;/api/user/punishment/set&quot;)
+&nbsp;    public Result&lt;String&gt; setPunishment(@RequestParam int userId, @RequestParam int days) {
+<b class="fc">&nbsp;        userPunishmentService.punish(userId, days);</b>
+<b class="fc">&nbsp;        return Result.success(null);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @CrossOrigin
+&nbsp;    @PostMapping(&quot;/api/user/punishment/stop&quot;)
+&nbsp;    public Result&lt;String&gt; stopPunishment(@RequestParam int userId) {
+<b class="fc">&nbsp;        userPunishmentService.stop(userId);</b>
+<b class="fc">&nbsp;        return Result.success(null);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-01-12 14:38</div>
+</div>
+</body>
+</html>

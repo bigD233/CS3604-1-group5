@@ -1,0 +1,26 @@
+{
+  "name": "ui-prototype",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.0.10",
+    "@jsdawn/vue3-tinymce": "^2.0.4",
+    "@kangc/v-md-editor": "^2.3.15",
+    "axios": "^1.2.0",
+    "element-plus": "^2.2.19",
+    "vue": "^3.2.41",
+    "vue-router": "^4.1.6",
+    "vuex": "^4.1.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^3.1.2",
+    "crypto-js": "^4.1.1",
+    "unplugin-auto-import": "^0.11.4",
+    "unplugin-vue-components": "^0.22.9",
+    "vite": "^3.1.8"
+  }
+}

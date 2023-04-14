@@ -1,0 +1,426 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > AnswerController</title>
+  <style type="text/css">
+    @import "./css/coverage.css";
+    @import "./css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="./js/highlight.min.js"></script>
+  <script type="text/javascript" src="./js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.whitecommunity.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: AnswerController (com.example.whitecommunity.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AnswerController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (15/15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (113/113)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.whitecommunity.controller;
+&nbsp;
+&nbsp;import com.example.whitecommunity.pojo.AnswerInfo;
+&nbsp;import com.example.whitecommunity.pojo.QuestionInfo;
+&nbsp;import com.example.whitecommunity.pojo.UserEvalAnswer;
+&nbsp;import com.example.whitecommunity.pojo.UserEvalQuestion;
+&nbsp;import com.example.whitecommunity.service.*;
+&nbsp;import com.sun.org.apache.bcel.internal.generic.INEG;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import org.springframework.web.client.RestTemplate;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.Arrays;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;
+&nbsp;@RestController
+<b class="fc">&nbsp;public class AnswerController {</b>
+<b class="fc">&nbsp;    @Autowired</b>
+&nbsp;    AnswerService answerService = new AnswerService();
+<b class="fc">&nbsp;    @Autowired</b>
+&nbsp;    UserEvalAnswerService userEvalAnswerService = new UserEvalAnswerService();
+<b class="fc">&nbsp;    @Autowired</b>
+&nbsp;    QuestionService questionService = new QuestionService();
+<b class="fc">&nbsp;    @Autowired</b>
+&nbsp;    UserEvalQuestionService userEvalQuestionService = new UserEvalQuestionService();
+<b class="fc">&nbsp;    @Autowired</b>
+&nbsp;    UserService userService = new UserService();
+<b class="fc">&nbsp;    @Autowired</b>
+&nbsp;    ClassificationService classificationService = new ClassificationService();
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    RestTemplate restTemplate;
+&nbsp;
+&nbsp;    @GetMapping(&quot;/api/answer/one&quot;)
+&nbsp;    @CrossOrigin
+&nbsp;    public AnswerInfo getOneAnswer(
+&nbsp;            @RequestParam int answerId, @RequestParam int visitorId
+&nbsp;    ) throws Exception {
+<b class="fc">&nbsp;        AnswerInfo ans = answerService.getById(answerId);</b>
+<b class="fc">&nbsp;        int loved = userEvalAnswerService.getLoveByUserAndAnswerId(</b>
+&nbsp;                visitorId, answerId
+&nbsp;        );
+<b class="fc">&nbsp;        ans.setLiked(loved);</b>
+<b class="fc">&nbsp;        boolean saved = userEvalAnswerService.getSaveByUserAndAnswerId(</b>
+&nbsp;                visitorId, answerId
+&nbsp;        );
+<b class="fc">&nbsp;        ans.setSaved(saved);</b>
+<b class="fc">&nbsp;        boolean reported = userEvalAnswerService.getReportByUserAndAnswerId(</b>
+&nbsp;                visitorId, answerId
+&nbsp;        );
+<b class="fc">&nbsp;        ans.setReported(reported);</b>
+<b class="fc">&nbsp;        return ans;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/api/answer/all&quot;)
+&nbsp;    @CrossOrigin
+&nbsp;    public List&lt;AnswerInfo&gt; getAllAnswersOfQuestion(
+&nbsp;            @RequestParam int questionId, @RequestParam int visitorId
+&nbsp;    ) throws Exception {
+<b class="fc">&nbsp;        List&lt;AnswerInfo&gt; answers = answerService.getAllAnswersByQuestionId(questionId);</b>
+<b class="fc">&nbsp;        for (AnswerInfo ans : answers) {</b>
+<b class="fc">&nbsp;            int answerId = ans.getAnswerId();</b>
+<b class="fc">&nbsp;            int loved = userEvalAnswerService.getLoveByUserAndAnswerId(</b>
+&nbsp;                    visitorId, answerId
+&nbsp;            );
+<b class="fc">&nbsp;            ans.setLiked(loved);</b>
+<b class="fc">&nbsp;            boolean saved = userEvalAnswerService.getSaveByUserAndAnswerId(</b>
+&nbsp;                    visitorId, answerId
+&nbsp;            );
+<b class="fc">&nbsp;            ans.setSaved(saved);</b>
+<b class="fc">&nbsp;            boolean reported = userEvalAnswerService.getReportByUserAndAnswerId(</b>
+&nbsp;                    visitorId, answerId
+&nbsp;            );
+<b class="fc">&nbsp;            ans.setReported(reported);</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return answers;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/api/answer/user&quot;)
+&nbsp;    @CrossOrigin
+&nbsp;    public List&lt;AnswerInfo&gt; getAnswersOfUser(@RequestParam int answererId) throws Exception {
+<b class="fc">&nbsp;        return answerService.getByAnswererId(answererId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;api/answer/add&quot;)
+&nbsp;    @CrossOrigin
+&nbsp;    public AnswerInfo addAnswer(
+&nbsp;            @RequestBody AnswerInfo answer
+&nbsp;    ) throws Exception {
+<b class="fc">&nbsp;        answer.setAnswerText(classificationService.classifyText(answer.getAnswerText()));</b>
+<b class="fc">&nbsp;        return answerService.insertAnswer(answer);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;api/answer/edit&quot;)
+&nbsp;    @CrossOrigin
+&nbsp;    public AnswerInfo editAnswer(@RequestBody AnswerInfo answer) throws Exception {
+<b class="fc">&nbsp;        int id = answer.getAnswerId();</b>
+<b class="fc">&nbsp;        AnswerInfo newAnswer = answerService.getById(id);</b>
+&nbsp;
+&nbsp;        // 更新内容, 编辑时间, 文本类型
+<b class="fc">&nbsp;        newAnswer.setAnswerText(classificationService.classifyText(answer.getAnswerText()));</b>
+<b class="fc">&nbsp;        newAnswer.setEditTime(answer.getEditTime());</b>
+<b class="fc">&nbsp;        newAnswer.setMarkdown(answer.isMarkdown());</b>
+&nbsp;
+<b class="fc">&nbsp;        return answerService.updateAnswer(newAnswer);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/api/answer/delete&quot;)
+&nbsp;    @CrossOrigin
+&nbsp;    public void deleteAnswers(@RequestParam int answerId) throws Exception {
+<b class="fc">&nbsp;        answerService.deleteById(answerId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * 对回答 (取消) 点赞 / 点踩
+&nbsp;     *
+&nbsp;     * @param userId    操作的用户 Id
+&nbsp;     * @param articleId 被操作的回答 Id
+&nbsp;     * @param evalType  0: 点赞; 1: 取消点赞; 2: 点踩: 3: 取消点踩
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;/api/answer/like&quot;)
+&nbsp;    @CrossOrigin
+&nbsp;    public void likeAnswer(
+&nbsp;            @RequestParam int userId, @RequestParam int articleId,
+&nbsp;            @RequestParam int evalType) {
+&nbsp;        // 修改表 &quot;answers&quot; 和 &quot;user_eval_answer&quot;
+<b class="fc">&nbsp;        switch (evalType) {</b>
+&nbsp;            case 0:
+<b class="fc">&nbsp;                answerService.incLikes(articleId);</b>
+<b class="fc">&nbsp;                userEvalAnswerService.setUserLovesAnswer(userId, articleId, 1);</b>
+<b class="fc">&nbsp;                break;</b>
+&nbsp;            case 1:
+<b class="fc">&nbsp;                answerService.decLikes(articleId);</b>
+<b class="fc">&nbsp;                userEvalAnswerService.setUserLovesAnswer(userId, articleId, 0);</b>
+<b class="fc">&nbsp;                break;</b>
+&nbsp;            case 2:
+<b class="fc">&nbsp;                answerService.incDislikes(articleId);</b>
+<b class="fc">&nbsp;                userEvalAnswerService.setUserLovesAnswer(userId, articleId, 2);</b>
+<b class="fc">&nbsp;                break;</b>
+&nbsp;            case 3:
+<b class="fc">&nbsp;                answerService.decDislikes(articleId);</b>
+<b class="fc">&nbsp;                userEvalAnswerService.setUserLovesAnswer(userId, articleId, 0);</b>
+&nbsp;                break;
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * (取消) 收藏回答
+&nbsp;     *
+&nbsp;     * @param userId    操作的用户 Id
+&nbsp;     * @param articleId 被操作的回答 Id
+&nbsp;     * @param evalType  0: 收藏; 1: 取消收藏
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;/api/answer/save&quot;)
+&nbsp;    @CrossOrigin
+&nbsp;    public void saveAnswer(
+&nbsp;            @RequestParam int userId, @RequestParam int articleId,
+&nbsp;            @RequestParam int evalType) {
+&nbsp;        // 修改表 &quot;answers&quot; 和 &quot;user_eval_answer&quot;
+<b class="fc">&nbsp;        switch (evalType) {</b>
+&nbsp;            case 0:
+<b class="fc">&nbsp;                answerService.incSaves(articleId);</b>
+<b class="fc">&nbsp;                userEvalAnswerService.setUserSavesAnswer(userId, articleId, true);</b>
+<b class="fc">&nbsp;                break;</b>
+&nbsp;            case 1:
+<b class="fc">&nbsp;                answerService.decSaves(articleId);</b>
+<b class="fc">&nbsp;                userEvalAnswerService.setUserSavesAnswer(userId, articleId, false);</b>
+&nbsp;                break;
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * 举报回答
+&nbsp;     *
+&nbsp;     * @param userId    举报的用户 Id
+&nbsp;     * @param articleId 被举报的回答 Id
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;/api/answer/report&quot;)
+&nbsp;    @CrossOrigin
+&nbsp;    public void reportAnswer(
+&nbsp;            @RequestParam int userId, @RequestParam int articleId,
+&nbsp;            @RequestParam String reason
+&nbsp;    ) {
+&nbsp;        // 修改表 &quot;user_eval_answer&quot;
+<b class="fc">&nbsp;        userEvalAnswerService.setUserReportsAnswer(userId, articleId, reason);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * 查询所有收藏的回答
+&nbsp;     *
+&nbsp;     * @param userId 操作的用户 Id
+&nbsp;     * @return 用户收藏的回答的编号列表
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;/api/answer/saved&quot;)
+&nbsp;    @CrossOrigin
+&nbsp;    public List&lt;Integer&gt; getAnswersSavedByUser(@RequestParam int userId) throws Exception {
+<b class="fc">&nbsp;        List&lt;UserEvalAnswer&gt; entries = userEvalAnswerService.getSavedAnswers(userId);</b>
+<b class="fc">&nbsp;        List&lt;Integer&gt; answerIds = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        for (UserEvalAnswer entry : entries) {</b>
+<b class="fc">&nbsp;            answerIds.add(entry.getAnswerId());</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return answerIds;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * 查询用户所有提问下的回答
+&nbsp;     *
+&nbsp;     * @param userId 用户 Id
+&nbsp;     * @return 四元组 (&quot;1&quot;, 时间, 回答者 Id, 回答 Id) 的列表
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;/api/answer/answerUser&quot;)
+&nbsp;    @CrossOrigin
+&nbsp;    public List&lt;List&lt;String&gt;&gt; getAnswersToUser(@RequestParam int userId) throws Exception {
+&nbsp;        // 查询用户所有提问
+<b class="fc">&nbsp;        List&lt;QuestionInfo&gt; questions = questionService.getByQuestionerId(userId);</b>
+&nbsp;
+&nbsp;        // 对每个提问查询所有回答
+<b class="fc">&nbsp;        List&lt;List&lt;String&gt;&gt; res = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        for (QuestionInfo question : questions) {</b>
+<b class="fc">&nbsp;            int questionId = question.getQuestionId();</b>
+<b class="fc">&nbsp;            List&lt;AnswerInfo&gt; answersToQuestion =</b>
+<b class="fc">&nbsp;                    answerService.getAllAnswersByQuestionId(questionId);</b>
+&nbsp;            // 对每个回答添加四元组
+<b class="fc">&nbsp;            String questionIdString = Integer.toString(questionId);</b>
+<b class="fc">&nbsp;            for (AnswerInfo answer : answersToQuestion) {</b>
+<b class="fc">&nbsp;                if (answer.getAnswererId() != userId) {</b>
+<b class="fc">&nbsp;                    List&lt;String&gt; quadruple = Arrays.asList(</b>
+&nbsp;                            &quot;1&quot;,
+<b class="fc">&nbsp;                            answer.getReleaseTime(),</b>
+&nbsp;                            questionIdString,
+<b class="fc">&nbsp;                            Integer.toString(answer.getAnswerId())</b>
+&nbsp;                    );
+<b class="fc">&nbsp;                    res.add(quadruple);</b>
+&nbsp;                }
+<b class="fc">&nbsp;            }</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return res;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * 查询用户所有关注的提问下的回答
+&nbsp;     *
+&nbsp;     * @param userId 用户 Id
+&nbsp;     * @return 四元组 (&quot;2&quot;, 时间, 问题 Id, 回答 Id) 的列表
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;/api/answer/answerToWatched&quot;)
+&nbsp;    @CrossOrigin
+&nbsp;    public List&lt;List&lt;String&gt;&gt; getAnswersToFollowed(@RequestParam int userId) throws Exception {
+&nbsp;        // 查询用户所有关注的提问
+<b class="fc">&nbsp;        List&lt;UserEvalQuestion&gt; entries = userEvalQuestionService.getSavedQuestions(userId);</b>
+<b class="fc">&nbsp;        List&lt;QuestionInfo&gt; questions = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        for (UserEvalQuestion entry : entries) {</b>
+<b class="fc">&nbsp;            int questionId = entry.getQuestionId();</b>
+<b class="fc">&nbsp;            questions.add(questionService.getById(questionId));</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        // 对每个提问查询所有回答
+<b class="fc">&nbsp;        List&lt;List&lt;String&gt;&gt; res = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        for (QuestionInfo question : questions) {</b>
+<b class="fc">&nbsp;            int questionId = question.getQuestionId();</b>
+<b class="fc">&nbsp;            List&lt;AnswerInfo&gt; answersToQuestion =</b>
+<b class="fc">&nbsp;                    answerService.getAllAnswersByQuestionId(questionId);</b>
+&nbsp;            // 对每个回答添加四元组
+<b class="fc">&nbsp;            String questionIdString = Integer.toString(questionId);</b>
+<b class="fc">&nbsp;            for (AnswerInfo answer : answersToQuestion) {</b>
+<b class="fc">&nbsp;                if (answer.getAnswererId() != userId) {</b>
+<b class="fc">&nbsp;                    List&lt;String&gt; quadruple = Arrays.asList(</b>
+&nbsp;                            &quot;2&quot;,
+<b class="fc">&nbsp;                            answer.getReleaseTime(),</b>
+&nbsp;                            questionIdString,
+<b class="fc">&nbsp;                            Integer.toString(answer.getAnswerId())</b>
+&nbsp;                    );
+<b class="fc">&nbsp;                    res.add(quadruple);</b>
+&nbsp;                }
+<b class="fc">&nbsp;            }</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return res;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * 查询所有关注的用户发布的回答
+&nbsp;     *
+&nbsp;     * @param userId 用户 Id
+&nbsp;     * @return 五元组 (&quot;6&quot;, 时间, 被关注者 Id, 问题 Id, 回答 Id) 的列表
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;/api/answer/followeeAnswers&quot;)
+&nbsp;    @CrossOrigin
+&nbsp;    public List&lt;List&lt;String&gt;&gt; getAnswersOfFollowee(@RequestParam int userId) throws Exception {
+&nbsp;        // 查询所有关注的用户
+<b class="fc">&nbsp;        List&lt;Integer&gt; followeeIds = userService.getFolloweesNoPage(userId);</b>
+&nbsp;
+&nbsp;        // 对于每个用户，查询其所有回答
+<b class="fc">&nbsp;        List&lt;List&lt;String&gt;&gt; res = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        for (Integer followeeId : followeeIds) {</b>
+<b class="fc">&nbsp;            List&lt;AnswerInfo&gt; answers = answerService.getByAnswererId(followeeId);</b>
+<b class="fc">&nbsp;            String followeeIdString = Integer.toString(followeeId);</b>
+&nbsp;            // 对于每个回答, 添加五元组
+<b class="fc">&nbsp;            for (AnswerInfo answer : answers) {</b>
+<b class="fc">&nbsp;                List&lt;String&gt; quintuple = Arrays.asList(</b>
+&nbsp;                        &quot;6&quot;,
+<b class="fc">&nbsp;                        answer.getReleaseTime(),</b>
+&nbsp;                        followeeIdString,
+<b class="fc">&nbsp;                        Integer.toString(answer.getQuestionId()),</b>
+<b class="fc">&nbsp;                        Integer.toString(answer.getAnswerId())</b>
+&nbsp;                );
+<b class="fc">&nbsp;                res.add(quintuple);</b>
+<b class="fc">&nbsp;            }</b>
+<b class="fc">&nbsp;        }</b>
+<b class="fc">&nbsp;        return res;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * 查询所有被举报的回答
+&nbsp;     */
+&nbsp;    @GetMapping(&quot;/api/answer/reported&quot;)
+&nbsp;    @CrossOrigin
+&nbsp;    public List&lt;UserEvalAnswer&gt; getReportedAnswer() throws Exception {
+<b class="fc">&nbsp;        return userEvalAnswerService.getReportedAnswers();</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-01-13 22:11</div>
+</div>
+</body>
+</html>

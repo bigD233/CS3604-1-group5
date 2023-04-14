@@ -1,0 +1,260 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > UserService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.whitecommunity.service</a>
+</div>
+
+<h1>Coverage Summary for Class: UserService (com.example.whitecommunity.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UserService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (16/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (61/61)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.whitecommunity.service;
+&nbsp;
+&nbsp;import java.util.Date;
+&nbsp;import java.util.GregorianCalendar;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;import org.mindrot.jbcrypt.BCrypt;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import com.example.whitecommunity.dao.UserDAO;
+&nbsp;import com.example.whitecommunity.pojo.User;
+&nbsp;
+&nbsp;@Service
+<b class="fc">&nbsp;public class UserService {</b>
+<b class="fc">&nbsp;    UserDAO userDAO = new UserDAO();</b>
+&nbsp;
+&nbsp;    public String encodePassword(String password) {
+<b class="fc">&nbsp;        return BCrypt.hashpw(password, BCrypt.gensalt());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public boolean checkPassword(String password, String encodedPassword) {
+<b class="fc">&nbsp;        return BCrypt.checkpw(password, encodedPassword);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public User add(String username, String password) {
+<b class="fc">&nbsp;        if (userDAO.countByUsername(username) &gt; 0) {</b>
+<b class="fc">&nbsp;            return null;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        User user = new User();</b>
+<b class="fc">&nbsp;        user.setUsername(username);</b>
+<b class="fc">&nbsp;        user.setPassword(encodePassword(password));</b>
+<b class="fc">&nbsp;        user = userDAO.save(user);</b>
+&nbsp;
+<b class="fc">&nbsp;        return user;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public User login(String username, String password) {
+<b class="fc">&nbsp;        User user = userDAO.findByUsername(username);</b>
+<b class="fc">&nbsp;        if (user == null || !checkPassword(password, user.getPassword())) {</b>
+<b class="fc">&nbsp;            return null;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return user;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public User updatePassword(int id, String oldPassword, String newPassword) {
+<b class="fc">&nbsp;        User user = userDAO.findById(id);</b>
+<b class="fc">&nbsp;        if (user == null || newPassword == null || !checkPassword(oldPassword, user.getPassword())) {</b>
+<b class="fc">&nbsp;            return null;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        user.setPassword(encodePassword(newPassword));</b>
+<b class="fc">&nbsp;        user = userDAO.save(user);</b>
+&nbsp;
+<b class="fc">&nbsp;        return user;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public User updateSetting(int id, String sign, String avatar) {
+<b class="fc">&nbsp;        User user = userDAO.findById(id);</b>
+<b class="fc">&nbsp;        if (user == null) {</b>
+<b class="fc">&nbsp;            return null;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        if (sign != null) {</b>
+<b class="fc">&nbsp;            user.setSign(sign);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        if (avatar != null) {</b>
+<b class="fc">&nbsp;            user.setAvatar(avatar);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        user = userDAO.save(user);</b>
+&nbsp;
+<b class="fc">&nbsp;        return user;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    boolean checkBirthday(Date birthday) {
+<b class="fc">&nbsp;        return birthday.compareTo(new GregorianCalendar(1900, 0, 0).getTime()) &gt; 0</b>
+<b class="fc">&nbsp;                &amp;&amp; birthday.compareTo(new Date()) &lt; 0;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    boolean checkSex(String sex) {
+<b class="fc">&nbsp;        return sex.equals(&quot;男&quot;) || sex.equals(&quot;女&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    boolean checkHeight(int height) {
+<b class="fc">&nbsp;        return height &gt; 0 &amp;&amp; height &lt; 300;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    boolean checkWeight(int weight) {
+<b class="fc">&nbsp;        return weight &gt; 0 &amp;&amp; weight &lt; 500;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public User updateInfo(int id, Date birthday, String sex, Integer height, Integer weight) {
+<b class="fc">&nbsp;        User user = userDAO.findById(id);</b>
+<b class="fc">&nbsp;        if (user == null) {</b>
+<b class="fc">&nbsp;            return null;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        if (birthday != null &amp;&amp; checkBirthday(birthday)) {</b>
+<b class="fc">&nbsp;            user.setBirthday(new java.sql.Date(birthday.getTime()));</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        if (sex != null &amp;&amp; checkSex(sex)) {</b>
+<b class="fc">&nbsp;            user.setSex(sex);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        if (height != null &amp;&amp; checkHeight(height)) {</b>
+<b class="fc">&nbsp;            user.setHeight(height);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        if (weight != null &amp;&amp; checkWeight(weight)) {</b>
+<b class="fc">&nbsp;            user.setWeight(weight);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        user = userDAO.save(user);</b>
+&nbsp;
+<b class="fc">&nbsp;        return user;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public User get(int id) {
+<b class="fc">&nbsp;        User user = userDAO.findById(id);</b>
+<b class="fc">&nbsp;        if (user == null) {</b>
+<b class="fc">&nbsp;            return null;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return user;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;User&gt; getFollowers(int followee, int pageSize, int pageNum) {
+<b class="fc">&nbsp;        if (pageSize &lt; 0 || pageSize &gt; 50 || pageNum &lt; 0) {</b>
+<b class="fc">&nbsp;            return null;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        List&lt;User&gt; users = userDAO.getFollowers(followee, pageSize, pageNum);</b>
+&nbsp;
+<b class="fc">&nbsp;        return users;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;User&gt; getFollowees(int follower, int pageSize, int pageNum) {
+<b class="fc">&nbsp;        if (pageSize &lt; 0 || pageSize &gt; 50 || pageNum &lt; 0) {</b>
+<b class="fc">&nbsp;            return null;</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        List&lt;User&gt; users = userDAO.getFollowees(follower, pageSize, pageNum);</b>
+&nbsp;
+<b class="fc">&nbsp;        return users;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * 查询所有关注的用户 (不分页)
+&nbsp;     *
+&nbsp;     * @param follower 关注着 id
+&nbsp;     * @return 关注的用户的 id 的列表
+&nbsp;     */
+&nbsp;    public List&lt;Integer&gt; getFolloweesNoPage(int follower) {
+<b class="fc">&nbsp;        return userDAO.getFolloweesNoPage(follower);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-01-13 10:59</div>
+</div>
+</body>
+</html>

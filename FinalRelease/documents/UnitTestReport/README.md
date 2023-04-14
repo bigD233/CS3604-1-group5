@@ -1,0 +1,1 @@
+单元测试代码见目录 `\TechPrototype\code\src\test\java\com\example\whitecommunity`.

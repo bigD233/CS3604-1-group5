@@ -1,0 +1,168 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > UserPunishmentService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.whitecommunity.service</a>
+</div>
+
+<h1>Coverage Summary for Class: UserPunishmentService (com.example.whitecommunity.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UserPunishmentService</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (28/28)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.example.whitecommunity.service;
+&nbsp;
+&nbsp;import java.sql.Timestamp;
+&nbsp;import java.util.Date;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import com.example.whitecommunity.dao.UserPunishmentDAO;
+&nbsp;import com.example.whitecommunity.pojo.UserPunishment;
+&nbsp;
+&nbsp;@Service
+<b class="fc">&nbsp;public class UserPunishmentService {</b>
+<b class="fc">&nbsp;    UserPunishmentDAO userPunishmentDAO = new UserPunishmentDAO();</b>
+&nbsp;
+&nbsp;    public UserPunishment get(int userId) {
+<b class="fc">&nbsp;        Date now = new Date();</b>
+<b class="fc">&nbsp;        Timestamp endTime = Timestamp.from(now.toInstant());</b>
+<b class="fc">&nbsp;        return userPunishmentDAO.findByUserIdAndEndTimeGreaterThanAndValid(userId, endTime, 1);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;UserPunishment&gt; getAll() {
+<b class="fc">&nbsp;        Date now = new Date();</b>
+<b class="fc">&nbsp;        Timestamp endTime = Timestamp.from(now.toInstant());</b>
+<b class="fc">&nbsp;        return userPunishmentDAO.findByEndTimeGreaterThanAndValid(endTime, 1);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void stop(int userId) {
+<b class="fc">&nbsp;        UserPunishment userPunishment = get(userId);</b>
+<b class="fc">&nbsp;        if (userPunishment == null) {</b>
+&nbsp;            return;
+&nbsp;        }
+<b class="fc">&nbsp;        userPunishment.setValid(0);</b>
+<b class="fc">&nbsp;        userPunishmentDAO.save(userPunishment);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void punish(int userId, int days) {
+<b class="fc">&nbsp;        if (days &lt;= 0) {</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        Date start = new Date();</b>
+<b class="fc">&nbsp;        Timestamp startTime = Timestamp.from(start.toInstant());</b>
+<b class="fc">&nbsp;        Date end = new Date(start.getTime() + days * 24l * 60 * 60 * 1000);</b>
+<b class="fc">&nbsp;        Timestamp endTime = Timestamp.from(end.toInstant());</b>
+&nbsp;
+<b class="fc">&nbsp;        UserPunishment oldPunishment = get(userId);</b>
+&nbsp;
+<b class="fc">&nbsp;        if (oldPunishment != null &amp;&amp; oldPunishment.getEndTime().after(endTime)) {</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        UserPunishment newPunishment = new UserPunishment();</b>
+<b class="fc">&nbsp;        newPunishment.setUserId(userId);</b>
+<b class="fc">&nbsp;        newPunishment.setStartTime(startTime);</b>
+<b class="fc">&nbsp;        newPunishment.setEndTime(endTime);</b>
+<b class="fc">&nbsp;        newPunishment.setValid(1);</b>
+<b class="fc">&nbsp;        userPunishmentDAO.save(newPunishment);</b>
+&nbsp;
+<b class="fc">&nbsp;        if (oldPunishment != null) {</b>
+<b class="fc">&nbsp;            oldPunishment.setValid(0);</b>
+<b class="fc">&nbsp;            userPunishmentDAO.save(oldPunishment);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-01-13 10:59</div>
+</div>
+</body>
+</html>
