@@ -50,19 +50,19 @@
 ### 架构与关键技术
 
 #### 软件架构
-<img src="pic/4-1.png">
-<img src="pic/4-2.png">
+<img src="pic/4-1.PNG">
+<img src="pic/4-2.PNG">
 
 #### 关键技术
 
 + **语义搜索**: 
-  <img src="pic/4-3.png">
+  <img src="pic/4-3.PNG">
 
 + **内容检测**：
-  <img src="pic/4-4.png">
+  <img src="pic/4-4.PNG">
 
 + **推荐系统**：
-  <img src="pic/4-5.png">
+  <img src="pic/4-5.PNG">
 
 
 
